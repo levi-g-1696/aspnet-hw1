@@ -29,25 +29,39 @@ namespace aspnetHW1.Controllers
         {
             return Ok(":)");
         }
-
-
-        [Route("{name}")]
-        public IActionResult GetAnimalByName(string name)
+        [Route("/special/{name2}")]
+        public ActionResult<Animal> GetAnimalByName2(string name2)
         {
-
-
-            string smileLink = "https://localhost:44337/api/animals/Smile";
+            string smileLink = "https://localhost:44337/api/animals/special/Smile";
             var animalList = GetAnimals();
-            var animal = (from a in animalList where a.Name == name select a).First();
+            var animal = (from a in animalList where a.Name == name2 select a).First();
             if (animal == null) return NotFound();
-            else if (animal.Name == "Jirafa")  return Redirect(smileLink);
-          
-            else return Ok(animal.Name + "  age:" + animal.Age);
+            else if (animal.Name == "Jirafa") return Redirect(smileLink);
+
+            else return animal;
+
         }
+
+
+       // [Route("{name}")]
+        //public IActionResult GetAnimalByName(string name)
+        //{
+
+
+        //    string smileLink = "https://localhost:44337/api/animals/Smile";
+        //    var animalList = GetAnimals();
+        //    var animal = (from a in animalList where a.Name == name select a).First();
+        //    if (animal == null) return NotFound();
+        //    else if (animal.Name == "Jirafa") return Redirect(smileLink);
+
+        //    else return Ok(animal.Name + "  age:" + animal.Age);
+        //}
+
+
     }
 
 
 
 }
-    
+
 
