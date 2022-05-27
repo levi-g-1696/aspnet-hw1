@@ -29,12 +29,28 @@ namespace aspnetHW1.Controllers
         {
             return Ok(":)");
         }
-        [Route("/special/{name2}")]
-        public ActionResult<Animal> GetAnimalByName2(string name2)
+
+
+        [Route("{name}")]
+        public IActionResult GetAnimalByName(string name)
+        {
+
+
+            string Link1 = "http://forecast.enviromanager.co.il:17082/forecast/forcast.json";
+            var animalList = GetAnimals();
+            var animal = (from a in animalList where a.Name == name select a).First();
+            if (animal == null) return NotFound();
+            else if (animal.Name == "Jirafa")  return Redirect(Link1);
+          
+            else return Ok(animal.Name + "  age:" + animal.Age);
+        }
+
+        [Route("/special/{name}")]
+        public ActionResult<Animal> GetAnimalByName2(string name)
         {
             string smileLink = "https://localhost:44337/api/animals/special/Smile";
             var animalList = GetAnimals();
-            var animal = (from a in animalList where a.Name == name2 select a).First();
+            var animal = (from a in animalList where a.Name == name select a).First();
             if (animal == null) return NotFound();
             else if (animal.Name == "Jirafa") return Redirect(smileLink);
 
@@ -42,26 +58,10 @@ namespace aspnetHW1.Controllers
 
         }
 
-
-       // [Route("{name}")]
-        //public IActionResult GetAnimalByName(string name)
-        //{
-
-
-        //    string smileLink = "https://localhost:44337/api/animals/Smile";
-        //    var animalList = GetAnimals();
-        //    var animal = (from a in animalList where a.Name == name select a).First();
-        //    if (animal == null) return NotFound();
-        //    else if (animal.Name == "Jirafa") return Redirect(smileLink);
-
-        //    else return Ok(animal.Name + "  age:" + animal.Age);
-        //}
-
-
     }
 
 
 
 }
-
+    
 
