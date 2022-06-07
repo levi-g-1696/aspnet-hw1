@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace aspnetHW1
+namespace ASPNET_HW2
 {
     public class Startup
     {
@@ -24,7 +24,6 @@ namespace aspnetHW1
 
         public IConfiguration Configuration { get; }
 
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -32,38 +31,63 @@ namespace aspnetHW1
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "aspnetHW1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ASPNET_HW2", Version = "v1" });
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "aspnetHW1 v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASPNET_HW2 v1"));
             }
-            app.Run(MyMiddleware);
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
+            string classnum, studnum;
+            app.Use(async (context, next) =>
             {
-                endpoints.MapControllers();
+                string req = context.Request.Path;
+                string[] reqarr = req.Split("/");
+                if (reqarr.Length <= 2) await next();
+                else { classnum = reqarr[1];
+                      
+                    await context.Response.WriteAsync("class number is " + classnum + "\n");
+                }
+                next();
+                
+            
+                
             });
-        }
-        private Task MyMiddleware(HttpContext context)
 
-        {
-            return context.Response.WriteAsync("Levi " + DateTime.Now);
+            app.Use(async (context, next) =>
+            {
+
+                string req = context.Request.Path;
+                string[] reqarr = req.Split("/");
+                if (reqarr.Length <= 2) await next();
+                else
+                {
+                    studnum = reqarr[2];
+
+                    await context.Response.WriteAsync("student number is " + studnum + "\n");
+                }
+
+
+            });
+
+
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+           
         }
+
     }
-
 }
 
